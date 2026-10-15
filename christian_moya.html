@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Christian B. Moya</title>
+  <meta name="description" content="Christian Moya studies why learning systems fail and how to make them more reliable.">
+  <meta property="og:title" content="Christian B. Moya">
+  <meta property="og:description" content="Research on reliable learning systems, with applications to AI alignment and scientific machine learning.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📐</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #ffffff;
+      --ink: #16202c;
+      --muted: #5a6574;
+      --rule: #e2e7ee;
+      --tint: #f1f5fb;
+      --accent: #1a5fc2;   /* headings and highlights */
+      --link: #1a66cc;     /* links */
+    }
+    * { box-sizing: border-box; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--link); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 0.2em; }
+    a:focus-visible, summary:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 2px; }
+
+    .page {
+      max-width: 78rem;
+      margin: 0 auto;
+      padding: 4rem 2rem;
+      display: grid;
+      grid-template-columns: 17rem minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      column-gap: 5rem;
+    }
+
+    /* Left column: who you are */
+    .profile { grid-column: 1; grid-row: 1; }
+    .portrait, .portrait-placeholder {
+      width: 9.5rem;
+      height: 9.5rem;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    .portrait-placeholder {
+      display: grid;
+      place-items: center;
+      background: var(--tint);
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 1rem;
+    }
+    h1 { font-size: 2.1rem; font-weight: 600; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 0.35rem; }
+    .position { color: var(--muted); margin: 0 0 1.25rem; }
+    .contact { list-style: none; padding: 0; margin: 0 0 2rem; }
+    .contact li { margin-bottom: 0.3rem; }
+
+    /* Research navigation: sticky in the sidebar on desktop, a bar on mobile */
+    .toc {
+      grid-column: 1; grid-row: 2;
+      align-self: start;
+      position: sticky; top: 2rem;
+      border-top: 1px solid var(--rule);
+      padding-top: 1.25rem;
+    }
+    .toc p { margin: 0 0 0.5rem; font-weight: 600; font-size: 0.95rem; }
+    .toc ul { list-style: none; padding: 0; margin: 0; }
+    .toc li { margin-bottom: 0.3rem; font-size: 0.95rem; }
+    .toc a { color: var(--muted); }
+    .toc a:hover { color: var(--link); }
+    .toc .all { margin-top: 0.8rem; }
+    .toc .all a { color: var(--link); }
+    .short { display: none; }
+
+    /* Main column: what you study, then the papers */
+    main { grid-column: 2; grid-row: 1 / span 2; }
+    .statement {
+      font-size: 1.3rem;
+      line-height: 1.6;
+      max-width: 44rem;
+      margin: 0.25rem 0 3.5rem;
+      padding-left: 1.25rem;
+      border-left: 3px solid var(--accent);
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    .area { margin-bottom: 3.5rem; scroll-margin-top: 2rem; }
+    .area h2 {
+      color: var(--accent);
+      font-size: 1.45rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      line-height: 1.25;
+      margin: 0 0 0.5rem;
+    }
+    .area-blurb { color: var(--muted); margin: 0 0 1.25rem; max-width: 50rem; text-align: justify; hyphens: auto; }
+
+    .paper {
+      display: grid;
+      grid-template-columns: 3.75rem minmax(0, 1fr);
+      gap: 1.25rem;
+      padding: 1.15rem 0;
+      border-top: 1px solid var(--rule);
+    }
+    .year { color: var(--muted); font-variant-numeric: tabular-nums; }
+    .paper h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.4; margin: 0 0 0.25rem; max-width: 46rem; }
+    .paper h3 a { color: var(--ink); }
+    .paper h3 a:hover { color: var(--link); }
+    .authors, .venue { color: var(--muted); margin: 0; font-size: 0.97rem; }
+    .authors strong { color: var(--ink); font-weight: 600; }
+    .venue { font-style: italic; }
+    .row { display: flex; flex-wrap: wrap; gap: 0.25rem 1.1rem; margin-top: 0.45rem; font-size: 0.95rem; align-items: baseline; }
+
+    details[open] { flex-basis: 100%; }
+    summary { cursor: pointer; list-style: none; color: var(--link); }
+    summary::-webkit-details-marker { display: none; }
+    summary::after {
+      content: "";
+      display: inline-block;
+      width: 0.4em; height: 0.4em;
+      margin-left: 0.4em;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: translateY(-0.2em) rotate(45deg);
+      transition: transform 0.15s ease;
+    }
+    details[open] summary::after { transform: translateY(0) rotate(-135deg); }
+    .abstract {
+      margin: 0.6rem 0 0.2rem;
+      padding: 0.85rem 1rem;
+      background: var(--tint);
+      border-radius: 4px;
+      color: #2a3440;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      max-width: 46rem;
+    }
+
+    .full-list {
+      border-top: 1px solid var(--rule);
+      padding-top: 1.5rem;
+      font-size: 1.02rem;
+    }
+
+    .teaching { margin-top: 3.5rem; padding-top: 2.5rem; border-top: 1px solid var(--rule); }
+    .courses { list-style: none; padding: 0; margin: 0; }
+    .courses li { padding: 0.9rem 0; border-top: 1px solid var(--rule); color: var(--muted); }
+    .courses li a { font-weight: 600; }
+
+    footer { grid-column: 1 / -1; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--rule); padding-top: 1.5rem; margin-top: 3rem; }
+
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; grid-template-rows: auto; padding: 2.5rem 1.25rem; }
+      .profile, .toc, main, footer { grid-column: 1; grid-row: auto; }
+      .contact { margin-bottom: 1.5rem; }
+      .toc {
+        top: 0;
+        z-index: 5;
+        border-top: none;
+        margin: 0 -1.25rem 2rem;
+        padding: 0.7rem 1.25rem;
+        background: var(--bg);
+        border-bottom: 1px solid var(--rule);
+        overflow-x: auto;
+        white-space: nowrap;
+        scrollbar-width: none;
+      }
+      .toc::-webkit-scrollbar { display: none; }
+      .toc p { display: none; }
+      .toc ul { display: flex; gap: 1.25rem; }
+      .toc li { margin: 0; }
+      .toc .all { margin: 0; }
+      .long { display: none; }
+      .short { display: inline; }
+      .statement { font-size: 1.15rem; margin-bottom: 2.75rem; }
+      .area { scroll-margin-top: 3.75rem; }
+    }
+    @media (max-width: 480px) {
+      .paper { grid-template-columns: 1fr; gap: 0.2rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      summary::after { transition: none; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ============ WHO YOU ARE ============ -->
+  <aside class="profile">
+    <!-- Put a square-ish photo named headshot.jpg in the same folder as this file -->
+    <img class="portrait" src="Chris.jpg" alt="Christian B. Moya">
+    <h1>Christian B. Moya</h1>
+    <p class="position">Department of Mathematics, Purdue University</p> <!-- EDIT -->
+    <ul class="contact">
+      <li><a href="mailto:cmoyacal@purdue.edu">cmoyacal@purdue.edu</a></li>
+      <li><a href="https://scholar.google.com/citations?user=B_3XdJQAAAAJ&sortby=pubdate">Google Scholar</a></li>
+    </ul>
+  </aside>
+
+  <!-- Research navigation. "long" labels show on desktop, "short" labels on phones. -->
+  <nav class="toc" aria-label="Research areas">
+    <p>Research</p>
+    <ul>
+      <li><a href="#alignment"><span class="long">AI Safety and Alignment</span><span class="short">Alignment</span></a></li>
+      <li><a href="#operators"><span class="long">Reliable Scientific Machine Learning</span><span class="short">Scientific ML</span></a></li>
+      <li><a href="#science"><span class="long">AI for Science and Engineering</span><span class="short">AI for science</span></a></li>
+      <li><a href="#generative"><span class="long">Sampling, Generative Modeling, and Optimization</span><span class="short">Sampling and optimization</span></a></li>      
+      <li><a href="#teaching"><span class="long">Courses Taught</span><span class="short">Courses</span></a></li> <!-- NEW -->
+      <li class="all"><a href="https://scholar.google.com/citations?user=B_3XdJQAAAAJ&sortby=pubdate">All publications</a></li> 
+    </ul>
+  </nav>
+
+  <main>
+    <!-- ============ WHAT YOU STUDY ============ -->
+    <p class="statement">I study why learning systems fail and how to make them more reliable when data, models, and feedback are imperfect. My research combines mathematical analysis and algorithm development, with applications to AI alignment and scientific machine learning.</p>
+
+    <!-- ============ SELECTED PAPERS ============
+      Feature two or three papers per area.
+      To add a paper, copy one <article class="paper"> ... </article> block and paste it into the right area.
+      List all authors in order and wrap your own name in <strong>...</strong>.
+      Delete any links you don't have (e.g. Code, Slides).
+      The sentence under each heading is a DRAFT: rewrite it to name the question that connects the papers.
+    -->
+
+    <section class="area" id="alignment">
+      <h2>AI Safety and Alignment</h2>
+      <p class="area-blurb">When feedback is noisy, biased, or incomplete, what do models actually learn from it, and how can training be designed so that intended behavior holds up in new situations?</p>
+
+      <article class="paper">
+        <div class="year">2026</div>
+        <div>
+          <h3><a href="https://openreview.net/forum?id=Hpfybj9wkd">Spurious Correlation Learning in Preference Optimization: Mechanisms, Consequences, and Mitigation via Tie Training</a></h3>
+          <p class="authors"><strong>Christian Moya</strong>, Alex Semendinger, Guang Lin, and Elliott Thornley</p>
+          <p class="venue">International Conference on Machine Learning (ICML)</p>
+          <div class="row">
+            <a href="https://openreview.net/pdf?id=Hpfybj9wkd">PDF</a>
+            <a href="https://www.lesswrong.com/posts/i2qTghrkyY9xdcCFq/tie-training-can-make-dpo-rlhf-trained-ais-generalize-better">Blog</a>
+            <a href="https://github.com/cmoyacal/tie-training">Code</a>
+            <a href="https://drive.google.com/file/d/1vmcSZFwtfdXty083sT-gd9vE1K7c-wAR/view?usp=sharing">Poster</a>
+            <a href="https://drive.google.com/file/d/1uRbst6ynsdlftv2t01V_E29Y5mmzNAJS/view?usp=sharing">Slides</a>
+            <details><summary>Abstract</summary><p class="abstract">Preference learning methods like Direct Preference Optimization (DPO) are known to induce reliance on spurious correlations, leading to sycophancy and length bias in today's language models and potentially severe goal misgeneralization in future systems. In this work, we provide a unified theoretical analysis of this phenomenon, characterizing the mechanisms of spurious learning, its consequences on deployment, and a provable mitigation strategy. Focusing on log-linear policies, we show that standard preference-learning objectives induce reliance on spurious features at the population level through two channels: mean spurious bias and causal-spurious correlation leakage. We then show that this reliance creates an irreducible vulnerability to distribution shift: more data from the same training distribution fails to reduce the model's dependence on spurious features. To address this, we propose tie training, a data augmentation strategy using ties (equal-utility preference pairs) to introduce data-driven regularization. We demonstrate that this approach selectively reduces spurious learning without degrading causal learning. Finally, we validate our theory on log-linear models and provide empirical evidence that both the spurious learning mechanisms and the benefits of tie training persist for neural networks and large language models.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2026</div>
+        <div>
+          <h3><a href="https://arxiv.org/abs/2609.35677">Verifier Errors in RLVR: Reward Hacking, Limits of Feedback, and Selective Control</a></h3>
+          <p class="authors"><strong>Christian Moya</strong>, Elliott Thornley, and Guang Lin</p>
+          <p class="venue">Preprint. Under review</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2609.35677">PDF</a>
+            <a href="https://github.com/cmoyacal/verifier-errors">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">In reinforcement learning with verifiable rewards (RLVR), imperfect verifiers can reward incorrect responses, creating opportunities for reward hacking. Using gradient flow with a fixed verifier, we characterize the conditions under which reward rises while correctness falls. We then show that the observations available during RLVR are, in general, insufficient to detect or identify accepted errors, or to guarantee their reduction without sacrificing correct responses. To address this limit, we construct a correction using additional feedback about correctness from audits. This correction achieves \emph{selective control}: at the current policy, it lowers the probability of accepted errors and raises that of correct responses, provided it outweighs the pressure toward errors from verifier reward. Experiments with log linear and neural contextual bandits and with a language model support the analysis and show that selective control under partial auditing reduces accepted errors while increasing correctness.</p></details>
+          </div>
+        </div>
+      </article>
+
+    <article class="paper">
+        <div class="year">2026</div>
+        <div>
+          <h3><a href="#">Selective Tie Learning: Mitigating Spurious Correlations in Preference Optimization</a></h3>
+          <p class="authors"><strong>Christian Moya</strong>, Purav Matlia, Elliott Thornley, and Guang Lin</p>
+          <p class="venue">Preprint. Under review</p>
+          <div class="row">
+            <a href="#">PDF</a>
+            <a href="https://github.com/purav-0000/selective-tie-learning">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">Preference optimization can learn spurious correlations, and augmenting the preference data with ties (equally preferred responses) can reduce spurious reliance. However, ties differ in their corrective effect, making their selection for augmentation important. For log-linear policies, we derive each tie's influence on spurious reliance and show that taking the largest predicted reductions is first-order optimal among subsets of equal size. Computing these influences requires knowledge of the spurious features and the curvature of the training objective, which is often unavailable or expensive to estimate. To this end, we explore using the magnitude of a tie's implicit reward margin and characterize the conditions under which it is a useful proxy for predicted influence. To test the theory and its qualitative transfer to neural models, we estimate influence with a counterfactual proxy for spurious reliance and use a generalized Gauss--Newton approximation to curvature for language models. Across log-linear policies, neural models, and large language models, our selection rules consistently achieve comparable reductions in spurious reliance with fewer ties than uniform selection.</p></details>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="area" id="operators">
+      <h2>Reliable Scientific Machine Learning</h2>
+      <p class="area-blurb">When can a learned solution operator be trusted outside the data it was trained on, and how can its errors be measured and controlled?</p>
+
+      <article class="paper">
+        <div class="year">2025</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/abs/pii/S0167278924003683/">Conformalized-DeepONet: A Distribution-Free Framework for Uncertainty Quantification in Deep Operator Networks</a></h3>
+          <p class="authors"><strong>Christian Moya</strong>, Amirhossein Mollaali, Zecheng Zhang, Lu Lu, and Guang Lin</p>
+          <p class="venue">Physica D: Nonlinear Phenomena</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2402.15406">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">In this paper, we adopt conformal prediction, a distribution-free uncertainty quantification (UQ) framework, to obtain prediction intervals with coverage guarantees for Deep Operator Network (DeepONet) regression. Initially, we enhance the uncertainty quantification frameworks (B-DeepONet and Prob-DeepONet) previously proposed by the authors by using split conformal prediction. By combining conformal prediction with our Prob- and B-DeepONets, we effectively quantify uncertainty by generating rigorous prediction intervals for DeepONet prediction. Additionally, we design a novel Quantile-DeepONet that allows for a more natural use of split conformal prediction. We refer to this distribution-free effective uncertainty quantification framework as split conformal Quantile-DeepONet regression. Finally, we demonstrate the effectiveness of the proposed methods using various ordinary, partial differential equation numerical examples, and multi-fidelity learning.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2026</div>
+        <div>
+          <h3><a href="https://iopscience.iop.org/article/10.1088/2632-2153/ae7495/meta">Conformalized-KANs: Uncertainty Quantification with Coverage Guarantees for Kolmogorov–Arnold Networks (KANs) in Scientific Machine Learning</a></h3>
+          <p class="authors">Amirhossein Mollaali, <strong>Christian Moya</strong>, Amanda A. Howard, Alexander Heinlein, Panos Stinis, and Guang Lin</p>
+          <p class="venue">Machine Learning: Science and Technology</p>
+          <div class="row">
+            <a href="https://iopscience.iop.org/article/10.1088/2632-2153/ae7495/pdf">PDF</a>
+            <a href="https://github.com/mollaalipurdue-cmyk/Conformalized-KANs">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">This paper explores uncertainty quantification (UQ) methods in the context of Kolmogorov–Arnold Networks (KANs). We apply an ensemble approach to KANs to obtain a heuristic measure of UQ, enhancing interpretability and robustness in modeling complex functions. However, particularly in data-limited and complex scientific settings, ensemble-based uncertainty estimates, as is the case for many UQ methods, are sensitive to implicit distributional assumptions and do not provide formal coverage guarantees. Building on this, we develop conformalized-KANs, a conformal UQ framework for KANs that combines ensemble-based uncertainty estimates with split conformal prediction to generate calibrated prediction intervals with formal coverage guarantees. Numerical experiments are conducted to evaluate the effectiveness of these methods, focusing particularly on the robustness and accuracy of the prediction intervals under various hyperparameter settings. We further show that this framework extends naturally to recent KAN variants, including finite basis KANs and multi-fidelity KANs. The results demonstrate the potential of our approaches to improve the reliability and applicability of KANs in scientific machine learning.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2025</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/pii/S0021999125008198">DeepONet as a Multi-Operator Extrapolation Model: Distributed Pretraining with Physics-Informed Fine-Tuning</a></h3>
+          <p class="authors">Zecheng Zhang, <strong>Christian Moya</strong>, Lu Lu, Guang Lin, and Hayden Schaeffer</p>
+          <p class="venue">Journal of Computational Physics</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2411.07239">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">We propose a novel fine-tuning method to achieve multi-operator learning through training a distributed neural operator with diverse function data and then zero-shot fine-tuning the neural network using physics-informed losses for downstream tasks. Operator learning effectively approximates solution operators for PDEs and various PDE-related problems, yet it often struggles to generalize to new tasks. To address this, we investigate fine-tuning a pretrained model, while carefully selecting an initialization that enables rapid adaptation to new tasks with minimal data. Our approach combines distributed learning to integrate data from various operators in pre-training, while physics-informed methods enable zero-shot fine-tuning, minimizing the reliance on downstream data. We investigate standard fine-tuning and Low-Rank Adaptation fine-tuning, applying both to train complex nonlinear target operators that are difficult to learn only using random initialization. Through comprehensive numerical examples, we demonstrate the advantages of our approach, showcasing significant improvements in accuracy. Our findings provide a robust framework for advancing multi-operator learning and highlight the potential of transfer learning techniques in this domain.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2024</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/pii/S0045782524003402">D2NO: Efficient Handling of Heterogeneous Input Function Spaces with Distributed Deep Neural Operators</a></h3>
+          <p class="authors">Zecheng Zhang, <strong>Christian Moya</strong>, Lu Lu, Guang Lin, and Hayden Schaeffer</p>
+          <p class="venue">Computer Methods in Applied Mechanics and Engineering</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2310.18888">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">Neural operators have been applied in various scientific fields, such as solving parametric partial differential equations, dynamical systems with control, and inverse problems. However, challenges arise when dealing with input functions that exhibit heterogeneous properties, requiring multiple sensors to handle functions with minimal regularity. To address this issue, discretization-invariant neural operators have been used, allowing the sampling of diverse input functions with different sensor locations. However, existing frameworks still require an equal number of sensors for all functions. We propose a novel distributed approach to further relax the discretization requirements and solve the heterogeneous dataset challenges. Our method involves partitioning the input function space and processing individual input functions using independent and separate neural networks. A centralized neural network is used to handle shared information across all output functions. This distributed methodology reduces the number of gradient descent back-propagation steps, improving efficiency while maintaining accuracy. We demonstrate that the corresponding neural network is a universal approximator of continuous nonlinear operators and present three numerical examples to validate its performance.</p></details>
+          </div>
+        </div>
+      </article>
+      
+      <article class="paper">
+        <div class="year">2024</div>
+        <div>
+          <h3><a href="https://epubs.siam.org/doi/full/10.1137/23M160342X">Bayesian Deep Operator Learning for Homogenized to Fine-Scale Maps for Multiscale PDE</a></h3>
+          <p class="authors">Zecheng Zhang, <strong>Christian Moya</strong>, Wing Tat Leung, Guang Lin, and Hayden Schaeffer</p>
+          <p class="venue">SIAM Multiscale Modeling & Simulation</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2308.14188">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">We present a new framework for computing fine-scale solutions of multiscale partial differential equations (PDEs) using operator learning tools. Obtaining fine-scale solutions of multiscale PDEs can be challenging, but there are many inexpensive computational methods for obtaining coarse-scale solutions. Additionally, in many real-world applications, fine-scale solutions can only be observed at a limited number of locations. In order to obtain approximations or predictions of fine-scale solutions over general regions of interest, we propose to learn the operator mapping from coarse-scale solutions to fine-scale solutions using observations of a limited number of (possible noisy) fine-scale solutions. The approach is to train multi-fidelity homogenization maps using mathematically motivated neural operators. The operator learning framework can efficiently obtain the solution of multiscale PDEs at any arbitrary point, making our proposed framework a mesh-free solver. We verify our results on multiple numerical examples showing that our approach is an efficient mesh-free solver for multiscale PDEs.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2023</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/pii/S0021999122007768">B-DeepONet: An Enhanced Bayesian DeepONet for Solving Noisy Parametric PDEs using Accelerated Replica Exchange SGLD</a></h3>
+          <p class="authors">Guang Lin, <strong>Christian Moya</strong>, and Zecheng Zhang</p>
+          <p class="venue">Journal of Computational Physics</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2111.02484">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">The Deep Operator Network (DeepONet) is a neural network architecture used to approximate operators, including the solution operator of parametric PDEs. DeepONets have shown remarkable approximation ability. However, the performance of DeepONets deteriorates when the training data is polluted with noise, a scenario that occurs in practice. To handle noisy data, we propose a Bayesian DeepONet based on replica exchange Langevin diffusion (reLD). Replica exchange uses two particles. The first particle trains a DeepONet to exploit the loss landscape and make predictions. The other particle trains a different DeepONet to explore the loss landscape and escape local minima via swapping. Compared to DeepONets trained with state-of-the-art gradient-based algorithms (e.g., Adam), the proposed Bayesian DeepONet greatly improves the training convergence for noisy scenarios and accurately estimates the uncertainty. To further reduce the high computational cost of the reLD training of DeepONets, we propose (1) an accelerated training framework that exploits the DeepONet's architecture to reduce its computational cost up to 25% without compromising performance and (2) a transfer learning strategy that accelerates training DeepONets for PDEs with different parameter values. Finally, we illustrate the effectiveness of the proposed Bayesian DeepONet using four parametric PDE problems.</p></details>
+          </div>
+        </div>
+      </article>
+
+
+    </section>
+
+    <section class="area" id="science">
+      <h2>AI for Science and Engineering</h2>
+      <p class="area-blurb">How can learning methods become dependable enough to inform scientific and engineering decisions, where errors carry physical costs?</p>
+
+      <article class="paper">
+        <div class="year">2023</div>
+        <div>
+          <h3><a href="https://link.springer.com/article/10.1007/s00521-022-07886-y">DAE-PINN: A Physics-Informed Neural Network Model for Simulating Differential Algebraic Equations with Application to Power Networks</a></h3>
+          <p class="authors"><strong>Christian Moya</strong> and Guang Lin</p>
+          <p class="venue">Neural Computing and Applications</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2109.04304">PDF</a>
+            <a href="https://github.com/cmoyacal/DAE-PINNs">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">Deep learning-based surrogate modeling is becoming a promising approach for learning and simulating dynamical systems. However, deep-learning methods find it very challenging to learn stiff dynamics. In this paper, we develop DAE-PINN, the first effective physics-informed deep-learning framework for learning and simulating the solution trajectories of nonlinear differential-algebraic equations (DAE). DAEs are used to model complex engineering systems, e.g., power networks, and present a “form” of infinite stiffness, which makes learning their solution trajectories challenging. Our DAE-PINN bases its effectiveness on the synergy between implicit Runge–Kutta time-stepping schemes (designed specifically for solving DAEs) and physics-informed neural networks (PINN) (deep neural networks that we train to satisfy the dynamics of the underlying problem). Furthermore, our framework (i) enforces the neural network to satisfy the DAEs as (approximate) hard constraints using a penalty-based method and (ii) enables simulating DAEs for long-time horizons. We showcase the effectiveness and accuracy of DAE-PINN by learning the solution trajectories of a three-bus power network.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2025</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/abs/pii/S0893608025006896">Conformalized Prediction of Post-Fault Voltage Trajectories using Pre-Trained and Finetuned Attention-Driven Neural Operators</a></h3>
+          <p class="authors">Amirhossein Mollaali, Gabriel Zufferey, Gonzalo Constante, <strong>Christian Moya</strong>, Can Li, Meng Yue, and Guang Lin</p>
+          <p class="venue">Neural Networks</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2410.24162">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">This paper proposes a new data-driven methodology for predicting intervals of post-fault voltage trajectories in power systems. We begin by introducing the Quantile Attention-Fourier Deep Operator Network (QAF-DeepONet), designed to capture the complex dynamics of voltage trajectories and reliably estimate quantiles of the target trajectory without any distributional assumptions. The proposed operator regression model maps the observed portion of the voltage trajectory to its unobserved post-fault trajectory. Our methodology employs a pre-training and fine-tuning process to address the challenge of limited data availability. To ensure data privacy in learning the pre-trained model, we employ federated learning to aggregate information from neighboring buses, enabling the model to learn the underlying voltage dynamics from such buses without directly sharing their data. After pre-training, we fine-tune the model with data from the target bus, allowing it to adapt to unique dynamics and operating conditions. Finally, we integrate conformal prediction into the fine-tuned model to ensure coverage guarantees for the predicted intervals. We evaluated the performance of the proposed methodology using the New England 39-bus test system, considering detailed models of voltage and frequency controllers. Two metrics, Prediction Interval Coverage Probability (PICP) and Prediction Interval Normalized Average Width (PINAW), are used to numerically assess the model’s performance in predicting intervals. The results show that the proposed approach offers practical and reliable uncertainty quantification in predicting the interval of post-fault voltage trajectories.</p></details>
+          </div>
+        </div>
+      </article>
+
+
+      <article class="paper">
+        <div class="year">2024</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/pii/S0017931023009584">Deep Operator Learning-Based Surrogate Models with Uncertainty Quantification for Optimizing Internal Cooling Channel Rib Profiles</a></h3>
+          <p class="authors">Izzet Sahin, <strong>Christian Moya</strong>, Amirhossein Mollaali, Guang Lin, and Guillermo Paniagua</p>
+          <p class="venue">International Journal of Heat and Mass Transfer</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2306.00810">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">This paper focuses on designing surrogate models that have uncertainty quantification capabilities to effectively improve the thermal performance of rib-turbulated internal cooling channels. To construct the surrogate, we use the deep operator network (DeepONet) framework, a novel class of neural networks designed to approximate mappings between infinite-dimensional spaces using relatively small datasets. The proposed DeepONet takes an arbitrary rib geometry as input and outputs continuous detailed pressure and heat transfer distributions around the profiled ribs. The datasets needed to train and test the proposed DeepONet framework were obtained by simulating a 2D rib-roughened internal cooling channel. To accomplish this, we continuously modified the input rib geometry by adjusting the control points according to a simple random distribution with constraints, rather than following a predefined path or sampling method. The studied channel has a hydraulic diameter, $D_h$, of 66.7 mm, and a length-to-hydraulic diameter ratio, $L / D_h$, of 10. The ratio of rib center height to hydraulic diameter $(e/D_h)$, which was not changed during the rib profile update, was maintained at a constant value of 0.048. The ribs were placed in the channel with a pitch-to-height ratio $(P/e)$ of 10. In addition, we provide the proposed surrogates with effective uncertainty quantification capabilities. This is achieved by converting the DeepONet framework into a Bayesian DeepONet (B-DeepONet). B-DeepONet samples from the posterior distribution of DeepONet parameters using the novel framework of stochastic gradient replica-exchange MCMC. Finally, we demonstrate the performance of the proposed DeepONet-based surrogate models with uncertainty quantification by incorporating them into a constrained, gradient-free optimization problem that enhances the thermal performance of the rib-turbulated internal cooling channel.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2023</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/pii/S0925231223002503">DeepONet-Grid-UQ: A Trustworthy Deep Operator Framework for Predicting the Power Grid's Post-Fault Trajectories</a></h3>
+          <p class="authors"><strong>Christian Moya</strong>, Shiqi Zhang, Guang Lin, and Meng Yue</p>
+          <p class="venue">Neurocomputing</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2202.07176">PDF</a>
+            <a href="https://github.com/cmoyacal/DeepONet-Grid-UQ">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">This paper proposes a novel data-driven method for the reliable prediction of the power grid’s post-fault trajectories, i.e., the power grid’s dynamic response after a disturbance or fault. The proposed method is based on the recently proposed concept of Deep Operator Networks (DeepONets). Unlike traditional neural networks that learn to approximate functions, DeepONets are designed to approximate nonlinear operators, i.e., mappings between infinite-dimensional spaces. Under this operator framework, we design a novel and efficient DeepONet that (i) takes as inputs the trajectories collected before and during the fault and (ii) outputs the predicted post-fault trajectories. In addition, we endow our method with the much-needed ability to balance efficiency with reliable/trustworthy predictions via uncertainty quantification. To this end, we propose and compare two novel methods that enable quantifying the predictive uncertainty. First, we propose a Bayesian DeepONet (B-DeepONet) that uses stochastic gradient Hamiltonian Monte-Carlo to sample from the posterior distribution of the DeepONet trainable parameters. Then, we design a Probabilistic DeepONet (Prob-DeepONet) that uses a probabilistic training strategy to enable quantifying uncertainty at virtually no extra computational cost. Finally, we validate the proposed methods’ predictive power and uncertainty quantification capability using the New York-New England power grid model.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2023</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197623008734">Learning the Dynamical Response of Nonlinear Non-Autonomous Dynamical Systems with Deep Operator Neural Networks</a></h3>
+          <p class="authors">Guang Lin, <strong>Christian Moya</strong>, and Zecheng Zhang</p>
+          <p class="venue">Engineering Applications of Artificial Intelligence</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2206.06536">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">We propose using operator learning to approximate the dynamical response of non-autonomous systems, such as nonlinear control systems. Unlike classical function learning, operator learning maps between two function spaces, does not require discretization of the output function, and provides flexibility in data preparation and solution prediction. Particularly, we apply and redesign the Deep Operator Neural Network (DeepONet) to recursively learn the solution trajectories of the dynamical systems. Our approach involves constructing and training a DeepONet that approximates the system’s local solution operator. We then develop a numerical scheme that recursively simulates the system’s long/medium-term dynamic response for given inputs and initial conditions, using the trained DeepONet. We accompany the proposed scheme with an estimate for the error bound of the associated cumulative error. Moreover, we propose a data-driven Runge–Kutta (RK) explicit scheme that leverages the DeepONet’s forward pass and automatic differentiation to better approximate the system’s response when the numerical scheme’s step size is small. Numerical experiments on the predator–prey, pendulum, and cart pole systems demonstrate that our proposed DeepONet framework effectively learns to approximate the dynamical response of non-autonomous systems with time-dependent inputs.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2023</div>
+        <div>
+          <h3><a href="https://ieeexplore.ieee.org/abstract/document/10210333">DeepGraphONet: A Deep Graph Operator Network to Learn and Zero-Shot Transfer the Dynamic Response of Networked Systems
+</a></h3>
+          <p class="authors">Yixuan Sun, <strong>Christian Moya</strong>, Guang Lin, and Meng Yue</p>
+          <p class="venue">IEEE Systems Journal</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2209.10622">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">This article develops a deep graph operator network (DeepGraphONet) framework that learns to approximate the dynamics of a complex system (e.g., the power grid or traffic) with an underlying subgraph structure. We build our DeepGraphONet by fusing the ability of graph neural networks to exploit spatially correlated graph information and deep operator networks to approximate the solution operator of dynamical systems. The resulting DeepGraphONet can then predict the dynamics within a given short/medium-term time horizon by observing a finite history of the graph state information. Furthermore, we design our DeepGraphONet to be resolution independent. That is, we do not require the finite history to be collected at the exact/same resolution. In addition, to disseminate the results from a trained DeepGraphONet, we design a zero-shot learning strategy that enables using it on a different subgraph. Finally, empirical results on the transient stability prediction problem of power grids and traffic flow forecasting problem of a vehicular system illustrate the effectiveness of the proposed DeepGraphONet.</p></details>
+          </div>
+        </div>
+      </article>           
+
+    </section>
+
+    <section class="area" id="generative">
+      <h2>Sampling, Generative Modeling, and Optimization</h2>
+      <p class="area-blurb">How can sampling and optimization algorithms stay accurate and stable when models are misspecified, gradients are noisy, or the target distribution is only partly known?</p>
+
+      <article class="paper">
+        <div class="year">2024</div>
+        <div>
+          <h3><a href="https://proceedings.mlr.press/v238/zheng24b.html">Accelerating Approximate Thompson Sampling with Underdamped Langevin Monte Carlo</a></h3>
+          <p class="authors">Haoyang Zheng, Wei Deng, <strong>Christian Moya</strong>, and Guang Lin</p>
+          <p class="venue">International Conference on Artificial Intelligence and Statistics</p>
+          <div class="row">
+            <a href="https://proceedings.mlr.press/v238/zheng24b/zheng24b.pdf">PDF</a><a href="http://github.com/haoyangzheng-ai/ts_ulmc">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">Approximate Thompson sampling with Langevin Monte Carlo broadens its reach from Gaussian posterior sampling to encompass more general smooth posteriors. However, it still encounters scalability issues in high-dimensional problems when demanding high accuracy. To address this, we propose an approximate Thompson sampling strategy, utilizing underdamped Langevin Monte Carlo, where the latter is the go-to workhorse for simulations of high-dimensional posteriors. Based on the standard smoothness and log-concavity conditions, we study the accelerated posterior concentration and sampling using a specific potential function. This design improves the sample complexity for realizing logarithmic regrets from $\tilde{\mathcal{O}}(d)$ to $\tilde{\mathcal{O}}(\sqrt{d})$. The scalability and robustness of our algorithm are also empirically validated through synthetic experiments in high-dimensional bandit problems.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2026</div>
+        <div>
+          <h3><a href="https://arxiv.org/abs/2603.16757">pADAM: A Plug-and-Play All-in-One Diffusion Architecture for Multi-Physics Learning</a></h3>
+          <p class="authors">Amirhossein Mollaali, Bongseok Kim, <strong>Christian Moya</strong>, and Guang Lin</p>
+          <p class="venue">Preprint. Under review</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2603.16757">PDF</a><a href="https://github.com/Mollaali/pADAM">Code</a>
+            <details><summary>Abstract</summary><p class="abstract">Generalizing across disparate physical laws remains a fundamental challenge for artificial intelligence in science. Existing deep-learning solvers are largely confined to single-equation settings, limiting transfer across physical regimes and inference tasks. Here we introduce pADAM, a unified generative framework that learns a shared probabilistic prior across heterogeneous partial differential equation families. Through a learned joint distribution of system states and, where applicable, physical parameters, pADAM supports forward prediction and inverse inference within a single architecture without retraining. Across benchmarks ranging from scalar diffusion to nonlinear Navier--Stokes equations, pADAM achieves accurate inference even under sparse observations. Combined with conformal prediction, it also provides reliable uncertainty quantification with coverage guarantees. In addition, pADAM performs probabilistic model selection from only two sparse snapshots, identifying governing laws through its learned generative representation. These results highlight the potential of generative multi-physics modeling for unified and uncertainty-aware scientific inference.</p></details>
+          </div>
+        </div>
+      </article>
+
+      <article class="paper">
+        <div class="year">2025</div>
+        <div>
+          <h3><a href="https://www.sciencedirect.com/science/article/abs/pii/S0952197625017336">A Self-Adaptive Energy-Based Learning Rate for Stochastic Gradient Descent via Vector Auxiliary Variable Method</a></h3>
+          <p class="authors">Jiahao Zhang, <strong>Christian Moya</strong>, and Guang Lin</p>
+          <p class="venue">Engineering Applications of Artificial Intelligence</p>
+          <div class="row">
+            <a href="https://arxiv.org/pdf/2411.06573">PDF</a>
+            <details><summary>Abstract</summary><p class="abstract">Optimizing the learning rate remains a critical challenge in machine learning, essential for achieving model stability and efficient convergence. This paper introduces the Vector Auxiliary Variable (VAV) algorithm, an energy-based self-adaptive learning rate optimization method for stochastic gradient descent(SGD). Unlike traditional methods with fixed learning rates, the VAV method dynamically adjusts learning rates using an auxiliary variable linked directly to the training loss, ensuring significantly larger stable learning rates, rapid convergence, and substantial reductions in training time. Empirical results from regression (Physics-Informed Neural Networks for Burgers’ equation), image classification (on CIFAR-10, CIFAR-100 datasets), and natural language processing (SST-2 sentiment classification) tasks demonstrate improved stability, faster convergence rates (e.g., achieving 88% accuracy on CIFAR-10 in 30 epochs vs. 80 epochs for SGD), and competitive accuracy performance. Theoretical analysis confirms the unconditional energy dissipation property and convergence guarantees under reasonable assumptions. The VAV method offers practical advantages, particularly beneficial for large-scale real-time machine learning applications in scientific computing and deep learning.</p></details>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+
+    <p class="full-list">These are selected papers. The complete list is on <a href="https://scholar.google.com/citations?hl=en&user=B_3XdJQAAAAJ&view_op=list_works">Google Scholar</a>.</p> <!-- EDIT: same Scholar URL -->
+  
+    <section class="area teaching" id="teaching">  <!-- NEW -->
+      <h2>Courses Taught</h2>
+      <ul class="courses">
+        <li><a href="https://www.math.purdue.edu/~cmoyacal/spring_2022_ode/spring_2022_ode.html">Ordinary Differential Equations</a>, Purdue University, Spring 2022</li>
+      </ul>
+    </section>
+  
+  </main>
+
+  <footer>© 2026 Christian B. Moya</footer>
+</div>
+</body>
+</html>
